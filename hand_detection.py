@@ -16,6 +16,14 @@ while True:
     # read the image
     _, img = cap.read()
 
+    # convert to RGB
+    imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    results = hands.process(imgRGB)
+
+    # show landmarks
+    if results.multi_hand_landmarks:
+        for i, handLms in enumerate(results.multi_hand_landmarks): # hand ...
+            mp_draw.draw_landmarks(img, handLms, mp.solutions.hands.HAND_CONNECTIONS)
 
     # FPS
     current_time = time.time()
