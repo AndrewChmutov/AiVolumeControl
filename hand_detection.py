@@ -2,11 +2,50 @@ import cv2
 import mediapipe as mp
 import time
 
+
+class HandDetector:
+    def __init__(
+            self,
+            static_image_mode = False,
+            max_num_hands = 2,
+            min_detection_confidence = 0.5,
+            min_tracking_confidence = 0.5,
+            show_fps = True
+        ):
+
+        ### init attributes
+
+        # from parameters 
+        self.mode = static_image_mode
+        self.max_hands = max_num_hands,
+        self.min_detection_confidence = min_detection_confidence
+        self.min_tracking_confidence = min_tracking_confidence
+        self.show_fps = show_fps
+        
+        # default
+        self.hands = mp.solutions.hands.Hands()
+        self.mp_draw = mp.solutions.drawing_utils
+    
+    def convert_to_rgb(img):
+        return cv2.Color(img, cv2.COLOR_BGR2RGB)
+    
+
+    def find_hands(self, img):
+        # convert to RGB
+        imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        results = self.hands.process(imgRGB)
+
+        # show landmarks
+        if results.multi_hand_landmarks:
+            for i, handLms in enumerate(results.multi_hand_landmarks): # hand ...
+                self.mp_draw.draw_landmarks(img, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+
+    
+
 # video object, webcam
 cap = cv2.VideoCapture(0)
 
-hands = mp.solutions.hands.Hands()
-mp_draw = mp.solutions.drawing_utils
+detector = HandDetector()
 
 previous_time = current_time = 0
 
@@ -16,14 +55,8 @@ while True:
     # read the image
     _, img = cap.read()
 
-    # convert to RGB
-    imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    results = hands.process(imgRGB)
+    processed_img = detector.find_hands(img)
 
-    # show landmarks
-    if results.multi_hand_landmarks:
-        for i, handLms in enumerate(results.multi_hand_landmarks): # hand ...
-            mp_draw.draw_landmarks(img, handLms, mp.solutions.hands.HAND_CONNECTIONS)
 
     # FPS
     current_time = time.time()
@@ -37,7 +70,6 @@ while True:
         (128, 0, 128), 
         3
     )
-    
     cv2.imshow('Image', img)
 
     # delay
