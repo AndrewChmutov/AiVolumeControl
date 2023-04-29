@@ -33,13 +33,28 @@ class HandDetector:
     def find_hands(self, img):
         # convert to RGB
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        results = self.hands.process(imgRGB)
+        self.results = self.hands.process(imgRGB)
 
         # show landmarks
-        if results.multi_hand_landmarks:
-            for i, handLms in enumerate(results.multi_hand_landmarks): # hand ...
+        if self.results.multi_hand_landmarks:
+            for i, handLms in enumerate(self.results.multi_hand_landmarks): # hand ...
                 self.mp_draw.draw_landmarks(img, handLms, mp.solutions.hands.HAND_CONNECTIONS)
 
+
+    def find_landmark_coords(self, hand_index=0):
+        lm_list = []
+
+        if (self.results.multi_hand_landmarks and 
+            hand_index < len(self.results.multi_hand_landmarks)):
+            hand = self.results.multi_hand_landmarks[hand_index]
+            
+            for id, lm in enumerate(hand.landmark):
+                h, w, c = img.shape
+
+                cx, cy = int(lm.x * w), int(lm.y * w)
+                lm_list.append([id, cx, cy])
+
+        return lm_list
     
 
 # video object, webcam
