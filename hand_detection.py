@@ -55,35 +55,40 @@ class HandDetector:
         return lm_list
     
 
-# video object, webcam
-cap = cv2.VideoCapture(0)
+def main():
+    # video object, webcam
+    cap = cv2.VideoCapture(0)
 
-detector = HandDetector()
+    detector = HandDetector()
 
-previous_time = current_time = 0
-
-
-# webcam picture processing 
-while True:
-    # read the image
-    _, img = cap.read()
-
-    processed_img = detector.find_hands(img)
+    previous_time = current_time = 0
 
 
-    # FPS
-    current_time = time.time()
-    fps = 1/(current_time - previous_time)
-    previous_time = current_time
-    cv2.putText(img, 
-        str(int(fps)), 
-        (10, 70), 
-        cv2.FONT_HERSHEY_PLAIN, 
-        3, 
-        (128, 0, 128), 
-        3
-    )
-    cv2.imshow('Image', img)
+    # webcam picture processing 
+    while True:
+        # read the image
+        _, img = cap.read()
 
-    # delay
-    cv2.waitKey(1)
+        processed_img = detector.find_hands(img)
+
+
+        # FPS
+        current_time = time.time()
+        fps = 1/(current_time - previous_time)
+        previous_time = current_time
+        cv2.putText(img, 
+            str(int(fps)), 
+            (10, 70), 
+            cv2.FONT_HERSHEY_PLAIN, 
+            3, 
+            (128, 0, 128), 
+            3
+        )
+        cv2.imshow('Image', img)
+
+        # delay
+        cv2.waitKey(1)
+
+
+if __name__ == '__main__':
+    main()
