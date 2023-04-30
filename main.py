@@ -1,30 +1,11 @@
 import cv2
 import time
-import numpy
-import platform
 from hand_detection import HandDetector
-from subprocess import call
+from volume_changer import VolumeChanger
 
 
-class VolumeChanger:
-    def getRange(self):
-        pass
 
-    def setVolume(self, volume):
-        pass
-
-
-class LinuxVolumeChanger(VolumeChanger):
-    def getRange(self):
-        return (0, 100)
-
-    def setVolume(self, volume):
-        call(['amixer', '-D', 'pulse', 'sset', 'Master', str(volume) + '%'])
-
-
-def main():
-    volume_changer = LinuxVolumeChanger()
-
+def main(volume_ch: VolumeChanger):
     # video object, webcam
     cap = cv2.VideoCapture(0)
 
@@ -57,7 +38,3 @@ def main():
 
         # delay
         cv2.waitKey(1)
-
-
-if __name__ == '__main__':
-    main()
