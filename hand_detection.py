@@ -29,13 +29,13 @@ class HandDetector:
         return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     
 
-    def find_hands(self, img):
+    def find_hands(self, img, draw = True):
         img_copy = copy.deepcopy(img)
 
         self.results = self.hands.process(img_copy)
 
         # show landmarks
-        if self.results.multi_hand_landmarks:
+        if self.results.multi_hand_landmarks and draw:
             for i, handLms in enumerate(self.results.multi_hand_landmarks): # hand ...
                 self.mp_draw.draw_landmarks(img_copy, handLms, mp.solutions.hands.HAND_CONNECTIONS)
 
