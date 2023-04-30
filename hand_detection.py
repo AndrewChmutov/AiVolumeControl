@@ -1,6 +1,7 @@
 import cv2
 import mediapipe as mp
 import time
+import copy
 
 
 class HandDetector:
@@ -24,22 +25,24 @@ class HandDetector:
         self.hands = mp.solutions.hands.Hands()
         self.mp_draw = mp.solutions.drawing_utils
     
-    def convert_to_rgb(img):
-        return cv2.Color(img, cv2.COLOR_BGR2RGB)
+    def convert_to_rgb(self, img):
+        return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     
 
     def find_hands(self, img):
-        # convert to RGB
-        imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        self.results = self.hands.process(imgRGB)
+        img_copy = copy.deepcopy(img)
+
+        self.results = self.hands.process(img_copy)
 
         # show landmarks
         if self.results.multi_hand_landmarks:
             for i, handLms in enumerate(self.results.multi_hand_landmarks): # hand ...
-                self.mp_draw.draw_landmarks(img, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+                self.mp_draw.draw_landmarks(img_copy, handLms, mp.solutions.hands.HAND_CONNECTIONS)
+
+        return img_copy
 
 
-    def find_landmark_coords(self, hand_index=0):
+    def find_landmark_coords(self, shape, hand_index=0):
         lm_list = []
 
         if (self.results.multi_hand_landmarks and 
@@ -47,9 +50,9 @@ class HandDetector:
             hand = self.results.multi_hand_landmarks[hand_index]
             
             for id, lm in enumerate(hand.landmark):
-                h, w, c = img.shape
+                h, w, c = shape
 
-                cx, cy = int(lm.x * w), int(lm.y * w)
+                cx, cy = int(lm.x * w), int(lm.y * h)
                 lm_list.append([id, cx, cy])
 
         return lm_list
@@ -84,7 +87,7 @@ def main():
             (128, 0, 128), 
             3
         )
-        cv2.imshow('Image', img)
+        cv2.imshow('Image', processed_img)
 
         # delay
         cv2.waitKey(1)
