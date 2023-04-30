@@ -3,10 +3,28 @@ import time
 import numpy
 import platform
 from hand_detection import HandDetector
+from subprocess import call
 
+
+class VolumeChanger:
+    def getRange(self):
+        pass
+
+    def setVolume(self, volume):
+        pass
+
+
+class LinuxVolumeChanger(VolumeChanger):
+    def getRange(self):
+        return (0, 100)
+
+    def setVolume(self, volume):
+        call(['amixer', '-D', 'pulse', 'sset', 'Master', str(volume) + '%'])
 
 
 def main():
+    volume_changer = LinuxVolumeChanger()
+
     # video object, webcam
     cap = cv2.VideoCapture(0)
 
@@ -27,11 +45,11 @@ def main():
         current_time = time.time()
         fps = 1/(current_time - previous_time)
         previous_time = current_time
-        cv2.putText(img, 
+        cv2.putText(processed_img, 
             str(int(fps)), 
             (10, 70), 
             cv2.FONT_HERSHEY_PLAIN, 
-            3, 
+            3,
             (128, 0, 128), 
             3
         )
