@@ -10,7 +10,6 @@ class HandDetector:
             max_num_hands = 2,
             min_detection_confidence = 0.5,
             min_tracking_confidence = 0.5,
-            show_fps = True
         ):
 
         ### init attributes
@@ -20,7 +19,6 @@ class HandDetector:
         self.max_hands = max_num_hands,
         self.min_detection_confidence = min_detection_confidence
         self.min_tracking_confidence = min_tracking_confidence
-        self.show_fps = show_fps
         
         # default
         self.hands = mp.solutions.hands.Hands()
