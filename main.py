@@ -43,11 +43,12 @@ def main(volume_ch: VolumeChanger):
                     p1[0] // 2 + p2[0] // 2,
                     p1[1] // 2 + p2[1] // 2
                 )
-                print(center)
-                if dist < 35:
-                    cv2.circle(processed_img, center, 15, (0, 255, 0), cv2.FILLED)
-                else:
-                    cv2.circle(processed_img, center, 15, (0, 0, 255), cv2.FILLED)
+                # print(center)
+
+                green = np.interp(dist, [35, 200], [0, 255])
+                red = 255 - green
+
+                cv2.circle(processed_img, center, 15, (0, green, red), cv2.FILLED)
                     
         
 
